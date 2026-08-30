@@ -465,9 +465,20 @@
       el.addEventListener("mouseleave", hideTooltip);
       el.addEventListener("focus", (e) => showTooltip(e, day));
       el.addEventListener("blur", hideTooltip);
+      // Touch devices only simulate mouseenter once per session, so taps on
+      // different chunks after the first can get stuck showing stale data.
+      // click fires fresh every time regardless of device, so use it as the
+      // reliable path for taps.
+      el.addEventListener("click", (e) => {
+        e.stopPropagation();
+        showTooltip(e, day);
+      });
       grid.appendChild(el);
     });
   }
+
+  // Tapping anywhere outside a chunk dismisses the tooltip on mobile.
+  document.addEventListener("click", () => hideTooltip());
 
   function showTooltip(e, day) {
     const tip = document.getElementById("tooltip");
@@ -478,8 +489,32 @@
   }
   function moveTooltip(e) {
     const tip = document.getElementById("tooltip");
-    tip.style.left = (e.clientX + 14) + "px";
-    tip.style.top = (e.clientY + 14) + "px";
+    const margin = 10;
+
+    // Measure after content is set so we can clamp against real dimensions.
+    const tipRect = tip.getBoundingClientRect();
+    const tipWidth = tipRect.width || 120;
+    const tipHeight = tipRect.height || 40;
+
+    let left = e.clientX + 14;
+    let top = e.clientY + 14;
+
+    if (left + tipWidth + margin > window.innerWidth) {
+      left = e.clientX - tipWidth - 14; // flip to the left of the cursor/finger
+    }
+    if (left < margin) {
+      left = margin;
+    }
+
+    if (top + tipHeight + margin > window.innerHeight) {
+      top = e.clientY - tipHeight - 14; // flip above the cursor/finger
+    }
+    if (top < margin) {
+      top = margin;
+    }
+
+    tip.style.left = left + "px";
+    tip.style.top = top + "px";
   }
   function hideTooltip() {
     document.getElementById("tooltip").classList.remove("show");
