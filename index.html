@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>OkiToki — Uptime</title>
-<link rel="icon" type="image/png" href="https://i.postimg.cc/KcwZnMTP/okitoki.png">
+<link rel="icon" type="image/png" href="okitoki.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -30,7 +30,21 @@
   }
 
   * { box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
+  html { scroll-behavior: smooth; touch-action: pan-x pan-y; }
+
+  html, body {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none; /* disables the iOS long-press menu (save/copy image) */
+  }
+
+  img {
+    -webkit-user-drag: none;
+    user-drag: none;
+    -webkit-touch-callout: none;
+    pointer-events: none; /* blocks tap-and-hold / drag entirely on the logo */
+  }
 
   body {
     margin: 0;
@@ -336,7 +350,7 @@
 <div class="wrap">
   <div class="topbar">
     <div class="brand">
-      <img src="https://i.postimg.cc/KcwZnMTP/okitoki.png" alt="OkiToki logo">
+      <img src="okitoki.png" alt="OkiToki logo" draggable="false" oncontextmenu="return false;">
       OkiToki <span class="dim">/ uptime</span>
     </div>
     <div class="refresh-note mono" id="refresh-note">refreshing every 60s</div>
@@ -414,7 +428,7 @@
 
 <script>
   // Point this at wherever api.py is actually running.
-  const API_URL = "https://unobjectional-audrina-uncontortedly.ngrok-free.dev";
+  const API_URL = "https://your-api-domain-or-tunnel.example.com";
   const CACHE_KEY = "okitoki_uptime_cache";
   const REFRESH_MS = 60000;
 
