@@ -696,6 +696,18 @@
   loadCached();
   loadStatus();
   setInterval(loadStatus, REFRESH_MS);
+
+  // Mobile browsers often freeze the chart's container at a stale (or
+  // zero-width) size while the tab is backgrounded/app-switched away from.
+  // Force a resize + refresh once the page is visible again.
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden) {
+      if (trendChart) {
+        trendChart.resize();
+      }
+      loadStatus();
+    }
+  });
 </script>
 
 </body>
