@@ -480,6 +480,10 @@
   // Tapping anywhere outside a chunk dismisses the tooltip on mobile.
   document.addEventListener("click", () => hideTooltip());
 
+  // The tooltip uses fixed positioning, so it doesn't track scrolling —
+  // hide it as soon as the page scrolls instead of leaving it stuck on screen.
+  window.addEventListener("scroll", () => hideTooltip(), { passive: true });
+
   function showTooltip(e, day) {
     const tip = document.getElementById("tooltip");
     const pct = day.uptime_percent === null ? "no data" : fmtPercent(day.uptime_percent);
